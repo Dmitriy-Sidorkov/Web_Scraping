@@ -6,6 +6,7 @@ user_agent = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 YaBrowser/23.11.0.0 Safari/537.36'
 }  # Необходимо чтобы не получить блокировку сайта на подозрительный запрос
 
+
 def response(url_site_response, user_agent_response, filter_value):
     """Функция сбора требуемого HTML-кода страницы для последующего анализа элементов"""
     response_site = requests.get(url_site_response,
@@ -23,11 +24,12 @@ def get_url_page_product():
             yield url_page_product
 
 
-for url_page_product in get_url_page_product():
-    sleep(3)  # Необходимо чтобы не получить блокировку сайта на подозрительный запрос
-    for data_product in response(url_page_product, user_agent, filter_value='my-8 w-full rounded border'):  # Запускаем цикл по списку отфильтрованного HTML-кода со страницы конкретного товара
-        name_product = data_product.find('h3').text.strip()
-        price_product = data_product.find('h4').text.strip()
-        description_product = data_product.find('p').text.strip()
-        url_img_product = 'https://scrapingclub.com' + data_product.find('img').get('src')
-        print(name_product, price_product, description_product, url_img_product, sep='\n', end='\n\n')
+def get_info_product():
+    for url_page_product in get_url_page_product():
+        # sleep(3)  # Необходимо чтобы не получить блокировку сайта на подозрительный запрос
+        for data_product in response(url_page_product, user_agent, filter_value='my-8 w-full rounded border'):  # Запускаем цикл по списку отфильтрованного HTML-кода со страницы конкретного товара
+            name_product = data_product.find('h3').text.strip()
+            price_product = data_product.find('h4').text.strip()
+            description_product = data_product.find('p').text.strip()
+            url_img_product = 'https://scrapingclub.com' + data_product.find('img').get('src')
+            yield name_product, price_product, description_product, url_img_product
